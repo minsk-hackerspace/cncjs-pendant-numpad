@@ -22,11 +22,12 @@ const getUserHome = function() {
 
 module.exports = function(options, callback) {
     options = options || {};
+    console.log("options", options);
     options.secret = get(options, 'secret', process.env['CNCJS_SECRET']);
     options.baudrate = get(options, 'baudrate', 115200);
     options.vendorId = get(options, 'vendorid', 1578);
     options.productId = get(options, 'productid',16641);
-    options.probeOffest = get(options, 'probeoffset', 1.56);
+    options.probeOffset = get(options, 'probeoffset', '1.56');
     options.socketAddress = get(options, 'socketAddress', 'localhost');
     options.socketPort = get(options, 'socketPort', 8000);
     options.controllerType = get(options, 'controllerType', 'Grbl');
@@ -41,7 +42,7 @@ module.exports = function(options, callback) {
     }
 
     if (!options.secret) {
-        const cncrc = path.resolve(getUserHome(), '.cncjs/cncrc.cfg');
+        const cncrc = path.resolve(getUserHome(), '.cncrc');
         try {
 
             const config = JSON.parse(fs.readFileSync(cncrc, 'utf8'));
@@ -95,12 +96,12 @@ module.exports = function(options, callback) {
     });
 
     socket.on('serialport:read', function(data) {
-        console.log((data || '').trim());
+        console.log("< ", (data || '').trim());
     });
 
 
     socket.on('serialport:write', function(data) {
-        console.log((data || '').trim());
+        console.log("> ", (data || '').trim());
     });
 
 };
